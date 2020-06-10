@@ -14,6 +14,7 @@ from dash.dependencies import Input, Output
 from PIL import Image
 import tensorflow as tf
 import numpy as np
+import flask
 
 model = tf.keras.applications.MobileNet()
 labels_path = tf.keras.utils.get_file(
@@ -21,9 +22,8 @@ labels_path = tf.keras.utils.get_file(
     'https://storage.googleapis.com/download.tensorflow.org/data/ImageNetLabels.txt')
 imagenet_labels = np.array(open(labels_path).read().splitlines())[1:]
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = flask.Flask(__name__)
+app = dash.Dash(__name__, server=server)
 
 app.layout = html.Div([
     dcc.Upload(
@@ -73,5 +73,5 @@ def update_output(content):
     ])
     
 if __name__ == '__main__':
-    app.run_server(debug=True, use_reloader=False)
+    app.run_server(debug=True)
     
